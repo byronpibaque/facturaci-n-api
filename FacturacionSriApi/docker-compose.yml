@@ -1,0 +1,18 @@
+﻿version: '3.8'
+
+services:
+  web:
+    image: facturacion-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "10006:10006"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge

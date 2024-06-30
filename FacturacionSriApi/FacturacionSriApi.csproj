@@ -12,7 +12,7 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="SriWebServiceTest/SriWebService/SriWebService.csproj" />
+      <ProjectReference Include="..\SriWebService\SriWebService.csproj" />
     </ItemGroup>
 
     <ItemGroup>

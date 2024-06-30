@@ -1,30 +1,39 @@
 ﻿using System.Text;
 
-namespace SRIIntegration.SoapClient
+namespace SriWebService.SoapClient
 {
     public class HttpClientConnection
     {
         private readonly HttpClient _client;
-        private string UrlEndpoint;
+        private readonly string _urlEndpoint;
+
         public HttpClientConnection(string endpointUrl)
         {
-            _client= new HttpClient();
-            UrlEndpoint = endpointUrl;
+            _client = new HttpClient();
+            _urlEndpoint = endpointUrl;
         }
 
-        public async Task<HttpResponseMessage> PostRequest(string path, object body)
+        public async Task<HttpResponseMessage> PostRequest(string path, string xmlContent)
         {
-            HttpRequestMessage requestMessage = new HttpRequestMessage
+            try
             {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri(UrlEndpoint + path)
-            };
-            requestMessage.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("text/xml"));
-            string strContent = (string)body;
-            StringContent content = new StringContent(strContent, Encoding.UTF8, "text/xml");
-            requestMessage.Content = content; 
-            HttpResponseMessage response = await _client.SendAsync(requestMessage);
-            return response;
+                // Construir la URL completa para la solicitud
+                string requestUrl = _urlEndpoint.TrimEnd('/') + "/" + path.TrimStart('/');
+
+                // Configurar la solicitud HTTP POST
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
+                request.Content = new StringContent(xmlContent, Encoding.UTF8, "text/xml");
+
+                // Enviar la solicitud HTTP y obtener la respuesta
+                HttpResponseMessage response = await _client.SendAsync(request);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                // Manejar cualquier error de manera adecuada
+                throw new HttpRequestException($"Error al enviar solicitud HTTP POST: {ex.Message}", ex);
+            }
         }
     }
 }
